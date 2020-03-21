@@ -20,7 +20,7 @@
             </view>
           </view>
         </view>
-        <view class="after-sub" v-else-if="user.status === 0">
+        <view class="after-sub" v-else-if="user.status === 2">
           <after-sub></after-sub>
         </view>
         <view class="after-leave" v-else-if="user.status === 3">
