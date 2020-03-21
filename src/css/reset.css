@@ -3,8 +3,8 @@
 		padding: 0;
   }
    @font-face {
-       font-family: lets-go-digital;
-       src: url('~@/static/font/Let_s_go_Digital_Regular.ttf');
+       font-family: digital;
+       src: url('~@/static/font/Digital.ttf');
    }
   button{
       width: 370upx;

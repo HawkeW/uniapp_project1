@@ -7,31 +7,41 @@
         <!--   <view class="progress">
           <view class="progress-bar"></view>
         </view> -->
-        <view class="progress-text before-sub" v-if="user.status === 1">
-          <view class="left-time">
-            <view class="left-text">本周剩余时间</view>
-            <view class="left-detail">
-              <text class="num">{{ leftTime.left_days }}</text>
-              <text>天</text>
-              <text class="num">:{{ leftTime.left_hours }}</text>
-              <text>时</text>
-              <text class="num">:{{ leftTime.left_minutes }}</text>
-              <text>分</text>
+        <view class="status">
+          <view class="status-info">
+            <view class="before-sub" v-if="user.status === 1">
+              <view class="left-time">
+                <view class="left-text">本周剩余时间</view>
+                <view class="left-detail">
+                  <text class="num">{{ leftTime.left_days }}</text>
+                  <text>天</text>
+                  <text class="num">:{{ leftTime.left_hours }}</text>
+                  <text>时</text>
+                  <text class="num">:{{ leftTime.left_minutes }}</text>
+                  <text>分</text>
+                </view>
+              </view>
+            </view>
+            <view class="after-sub" v-else-if="user.status === 2">
+              <view class="left-time">
+                <view class="left-text">本周周报</view>
+                <view class="left-detail num">已提交</view>
+              </view>
+            </view>
+            <view class="after-leave" v-else-if="user.status === 3">
+              <view class="left-time">
+                <view class="left-text">本周周报</view>
+                <view class="left-detail num">已请假</view>
+              </view>
+            </view>
+            <view class="status-user">
+              <view class="user-info">{{ user.groupName }}</view>
+              <view class="user-info">{{ user.userName }}</view>
             </view>
           </view>
         </view>
-        <view class="after-sub" v-else-if="user.status === 2">
-          <after-sub></after-sub>
-        </view>
-        <view class="after-leave" v-else-if="user.status === 3">
-          <after-leave></after-leave>
-        </view>
+      </view>
 
-      </view>
-      <view class="left-user">
-        <view class="user-info">{{ user.groupName }}</view>
-        <view class="user-info">{{ user.userName }}</view>
-      </view>
       <view v-if="user.status ===1 ">
         <navigator url="/pages/submit/submit"><button type="primary">提交周报</button></navigator>
         <navigator url="/pages/leave/leave"><text class="ask-leave">我要请假</text></navigator>
@@ -44,8 +54,6 @@
 
 <script>
   import dealWithTime from '../../src/util/dealWithTime.js'
-  import afterLeave from '../../components/afterLeave.vue'
-  import afterSub from '../../components/afterSub.vue'
   import countDownCircle from '../../components/countDownCircle.vue'
   import {
     getWeeklyStatus
@@ -70,8 +78,6 @@
       }
     },
     components: {
-      afterLeave,
-      afterSub,
       countDownCircle
     },
     onLoad() {
@@ -109,8 +115,6 @@
     margin: 120upx auto;
   }
 
-
-
   .wrapper {
     position: relative;
     color: #000;
@@ -126,42 +130,21 @@
     /*  border: 8upx  #707070 solid; */
     border: 8upx #707070 solid;
     border-radius: 530upx;
-/*    border-radius: ; */
+    /*    border-radius: ; */
     border-bottom: 8upx solid transparent;
     width: 265px;
     height: 530upx;
     box-shadow: #e5e5e5;
   }
-
-  .progress-bar {
+  .status{
+    position: absolute;
+  }
+  .status-info {
     position: relative;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 80px;
-    margin: 0 auto;
-    margin-top: 120px;
-    background: white;
-  }
-
-  .progress-bar ::after {
-    position: absolute;
-    content: '';
-    background: linear-gradient(red, yellow);
-    bottom: 0;
-    right: 0;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    transform: scale(1.1);
-    border-radius: 50%;
-  }
-
-  .progress-text {
-    position: absolute;
-    left: 70upx;
-    top: 140upx;
+    margin-left: 76upx;
+    box-sizing: border-box;
+    padding-top: 140upx;
+    height: 500upx;
   }
 
   .left-text {
@@ -184,18 +167,15 @@
 
   .num {
     font-size: 110upx;
-    font-family: lets-go-digital;
+    font-family: digital;
     font-weight: 400;
     line-height: 46upx;
     color: rgba(0, 0, 0, 1);
     opacity: 1;
   }
 
-  .left-user {
-    position: relative;
-    bottom:130upx;
-    height: 100upx;
-    line-height: 34upx;
+  .status-user {
+    margin-top: 70upx;
   }
 
   .user-info {
