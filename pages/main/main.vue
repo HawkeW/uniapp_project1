@@ -28,7 +28,7 @@
                 <view class="left-detail num">已提交</view>
               </view>
             </view>
-            <view class="after-leave" v-else-if="user.status === 3">
+            <view class="after-leave" v-else-if="user.status ===3">
               <view class="left-time">
                 <view class="left-text">本周周报</view>
                 <view class="left-detail num">已请假</view>
@@ -105,6 +105,7 @@
 </script>
 
 <style>
+  @import url("../../src/css/reset.css");
   .main {
     margin: 20upx;
     text-align: center;
