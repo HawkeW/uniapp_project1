@@ -1,0 +1,51 @@
+  * {
+		margin: 0;
+		padding: 0;
+  }
+   @font-face {
+       font-family: lets-go-digital;
+       src: url('~@/static/font/Let_s_go_Digital_Regular.ttf');
+   }
+  button{
+      width: 370upx;
+      margin: 20upx auto;
+  }
+/* input {
+    height: 60upx;
+    width: 500upx;
+    border-bottom: 2upx solid #b3b3b3;
+    border-radius: 2px;
+    padding-left: 20upx;
+    box-sizing: border-box;
+  } */
+  radio{
+		/* transform: scale(0.7); */
+	}
+/*  button {
+    display: block;
+    width: 200upx;
+    height: 60upx;
+    text-align: center;
+    line-height: 60upx;
+		font-size: 32upx;
+  } */
+	textarea{
+		border: 1px #000 solid;
+		box-sizing: border-box;
+		padding: 10upx;
+		height: 200upx;
+		width: 100%;
+	}
+  .flex{
+    display: flex;
+  }
+  .alert{
+    font-size: 20upx;
+    color: red;
+  }
+  .current-week {
+    width: auto;
+    font-size: 48upx;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+  }

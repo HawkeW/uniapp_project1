@@ -1,0 +1,31 @@
+
+.weekly{
+		margin: 0 40rpx;
+		padding: 60rpx 0;
+}
+.header{
+		height: 130rpx;
+}
+.user-info{
+  margin-top: 40rpx;
+  font-size: 32rpx;
+}
+.input-area{
+  margin-top: 50rpx;
+}
+.weekly-title{
+  font-size: 28rpx;
+	height: 42rpx;
+  border-bottom: 1px #eeeeee solid;
+}
+.input-area >input{
+  display: block;
+	height: 60rpx;
+	line-height: 40rpx;
+	padding-top:16rpx;
+  border-bottom: 1px #eeeeee solid;
+}
+.btn{
+	margin: 60rpx;
+}
+
