@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "after-leave": "/components/afterLeave",
+    "after-sub": "/components/afterSub",
+    "count-down-circle": "/components/countDownCircle"
+  }
+}

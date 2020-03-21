@@ -32,7 +32,6 @@
 
   .wrapper {
     position: relative;
-    left: 100upx;
     top:140upx;
   }
 

@@ -23,7 +23,7 @@
         <view class="after-sub" v-else-if="user.status === 0">
           <after-sub></after-sub>
         </view>
-        <view class="after-leave" v-else-if="user.status === 2">
+        <view class="after-leave" v-else-if="user.status === 3">
           <after-leave></after-leave>
         </view>
 

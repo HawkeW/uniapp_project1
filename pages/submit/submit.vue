@@ -15,7 +15,7 @@
 			</view>
 			<view class="input-area">
 				<view class="weekly-title">下周计划（必填）</view>
-				<input v-model="weekly.plan"  maxlength=-1 />
+				<input v-model="weekly.plane"  maxlength=-1 />
 			</view>
 			<view class="input-area">
 				<view class="weekly-title">作品链接（GitHub、站酷等，选填）</view>
@@ -38,9 +38,10 @@
 			return {
 				weekly:{
           userId: 0,
+          groupId:0,
           complete:"",
           trouble:"",
-          plan:"",
+          plane:"",
           url:"",
           date: ""
         }
@@ -58,6 +59,7 @@
         }
         let params = this.weekly;
         this.weekly.userId = this.user.userId;
+        this.weekly.groupId = this.group.groupId;
         this.weekly.date = this.nowTime();
         
         submitWeekly(params).then(res=>{
@@ -84,7 +86,7 @@
         return nowTime.getFullYear()+'-'+(nowTime.getMonth()+1)+'-'+(nowTime.getDate())+' '+(nowTime.getHours())+':'+nowTime.getMinutes()+':'+nowTime.getSeconds()
       },
       checkFormat(){
-      return this.weekly.complete && this.weekly.trouble && this.weekly.plan;
+      return this.weekly.complete && this.weekly.trouble && this.weekly.plane;
     }
       
 		}

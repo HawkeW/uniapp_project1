@@ -46,8 +46,9 @@
       leave( ){
         let params = { 
           userId: this.user.userId,
-          leave_num: this.leaveTime,
-          reson:this.reason
+          weekNum: this.leaveTime,
+          reason:this.reason,
+          groupId:this.user.groupId
         }
         askLeave(params).then(res=>{
           if(res[1].data.infoCode === 500){
