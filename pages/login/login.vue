@@ -19,9 +19,11 @@
       <button form-type="submit" @tap="toLogin" type="primary">登录</button>
     </view>
     <view class="login-signup">
-      <button type="default" class="btn">
-        <navigator url="/pages/regist/regist">注册账号</navigator>
-      </button>
+      <navigator url="/pages/regist/regist">
+        <button type="default" class="btn">
+          注册账号
+        </button>
+      </navigator>
     </view>
   </view>
 </template>

@@ -54,12 +54,11 @@
             icon:'none',
             title:'请填写全部必填项后提交'
           })
-          console.log(1)
           return
         }
         let params = this.weekly;
         this.weekly.userId = this.user.userId;
-        this.weekly.groupId = this.group.groupId;
+        this.weekly.groupId = this.user.groupId;
         this.weekly.date = this.nowTime();
         
         submitWeekly(params).then(res=>{
