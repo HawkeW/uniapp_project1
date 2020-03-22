@@ -74,7 +74,7 @@
     },
     "h5" : {
         "router" : {
-            "base" : "/uniapp_wuan/",
+            "base" : "/uniapp_project1/",
             "mode" : "history"
         },
         "publicPath" : "",
