@@ -85,7 +85,6 @@
       this.getLeftTime();
       //请求用户周报数据
       getWeeklyStatus(this.user.userId).then(res => {
-        console.log(res[1])
         if (res[1].data.infoCode === 500) {
           uni.showToast({
             icon: 'none',
