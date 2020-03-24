@@ -5,26 +5,27 @@
     </view>
     <view class="login-info">
       <form @submit="toLogin">
-        <label class="login-input">
-          <view class="mail icon"></view>
+        <label class="login-input flex">
+          <view class="mail icon "></view>
           <input type="text" v-model="info.email" placeholder="邮箱" />
         </label>
-        <label class="login-input">
+        <label class="login-input flex">
           <view class="password icon"></view>
           <input password=true v-model="info.password" placeholder="密码" />
         </label>
+        <view class="login-btn btn">
+          <button form-type="submit" @tap="toLogin" type="primary">登录</button>
+        </view>
+        <view class="login-signup">
+          <navigator url="/pages/regist/regist">
+              <button type="default" class="btn">
+                注册账号
+             </button>
+           </navigator>
+        </view>
       </form>
     </view>
-    <view class="login-btn btn">
-      <button form-type="submit" @tap="toLogin" type="primary">登录</button>
-    </view>
-    <view class="login-signup">
-      <navigator url="/pages/regist/regist">
-          <button type="default" class="btn">
-            注册账号
-         </button>
-       </navigator>
-    </view>
+
   </view>
 </template>
 
@@ -125,7 +126,7 @@
 
   .login {
     height: 280upx;
-   margin: 140upx auto;
+    margin: 140upx auto;
     text-align: center;
   }
 
@@ -137,9 +138,10 @@
   }
 
   .icon {
-    height: 52upx;
-    width: 52upx;
-    margin: 0 30upx 20upx 30upx;
+    display: inline-block;
+    height: 22px;
+    width: 40px;
+    margin: 0 auto;
   }
 
   .mail {
@@ -152,11 +154,12 @@
 
   .login-info {
     margin: 50upx auto;
-    width: 800upx;
+    /* width: 800upx; */
   }
 
   .login-input {
     margin: 6upx 20upx 20upx 50upx;
+    padding-bottom: 10px;
     width: 650upx;
     display: flex;
     border-bottom: 2upx solid #919191;
@@ -166,7 +169,6 @@
     margin: 6upx 20upx 10upx 0;
     width: 100upx;
   }
-
 
   .login-btn {
     padding-top: 100upx;

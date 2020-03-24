@@ -1,6 +1,0 @@
-{
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "weekly-status": "/components/weeklyStatus"
-  }
-}

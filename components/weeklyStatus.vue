@@ -1,5 +1,4 @@
 <template>
-  <view class="">
     <view class="status-info">
         <view class="left-time">
           <view class="left-text ">
@@ -20,7 +19,6 @@
              </view>
         </view>
     </view>
-  </view>
 </template>
 
 <script>
@@ -47,9 +45,6 @@
     methods:{
       getLeftTime() {
         this.leftTime = dealWithTime();
-        this.$nextTick(function(){
-          
-        });
       }
     }
   }
