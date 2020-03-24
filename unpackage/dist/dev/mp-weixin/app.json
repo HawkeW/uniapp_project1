@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/main/main",
+    "pages/regist/regist",
+    "pages/group/group",
+    "pages/leave/leave",
+    "pages/submit/submit"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "午安煎饼计划",
+    "navigationBarBackgroundColor": "#007aff",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap74.json"
+}

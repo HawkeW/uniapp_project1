@@ -2,7 +2,7 @@
   import { mapMutations } from 'vuex';
   export default {
     onLaunch: function() {
-      uni.getStorage({ //获得保存在本地的用户信息  
+      uni.getStorage({ 
         key: 'user',
         success: (res) => {
           this.LOGIN(res.data);

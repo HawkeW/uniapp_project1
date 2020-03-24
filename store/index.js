@@ -6,14 +6,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	state: {
 		forcedLogin: true,
-		hasLogin: false,
-		user:{
-      userId:0,
-      groupId:0,
-      groupName:'11',
-      status:1,
-      userName:'11',
-    },
+		hasLogin: true,
+		user:{ },
     week:229
 	},
 	mutations: {
@@ -22,10 +16,7 @@ const store = new Vuex.Store({
 			state.hasLogin = true;
       uni.setStorage({
           key: 'user',
-          data: user,
-          success: function () {
-              console.log('userLogin success');
-          }
+          data: user
       });
 		},
 		LOGOUT(state) {
@@ -37,22 +28,16 @@ const store = new Vuex.Store({
       state.week = week;
       uni.setStorage({
           key: 'week',
-          data: week,
-          success: function () {
-              console.log('week success');
-          }
+          data: week
       });
     },
     UPDATE_USER(state, user){
       state.user = user;
       uni.setStorage({
           key: 'user',
-          data: user,
-          success: function () {
-              console.log('userUpdate success');
-          }
+          data: user
       });
-    }
+    },
 	}
 })
 

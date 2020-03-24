@@ -20,10 +20,10 @@
     </view>
     <view class="login-signup">
       <navigator url="/pages/regist/regist">
-        <button type="default" class="btn">
-          注册账号
-        </button>
-      </navigator>
+          <button type="default" class="btn">
+            注册账号
+         </button>
+       </navigator>
     </view>
   </view>
 </template>
@@ -125,7 +125,7 @@
 
   .login {
     height: 280upx;
-    margin: 140upx auto;
+   margin: 140upx auto;
     text-align: center;
   }
 
