@@ -9,7 +9,6 @@
     "app-plus" : {
         "usingComponents" : true,
         "nvueCompiler" : "uni-app",
-        "renderer":"native",
         "compilerVersion" : 3,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -55,8 +54,7 @@
                 "ad" : {}
             }
         },
-        "nvueLaunchMode" : "fast",
-        "renderer" : "native"
+        "nvueLaunchMode" : "fast"
     },
     /* 快应用特有相关 */
     "quickapp" : {},

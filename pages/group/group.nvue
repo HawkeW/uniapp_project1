@@ -3,12 +3,11 @@
     <view class="group-list">
       <radio-group @change="radioChange" class="group">
           <label  class="group-item" v-for="(item, index) in groups" :key="item.id">
-            
               <radio class="radio-btn" :value="item.id.toString()" :checked="index === current" /> <text class="radio-name">{{item.groupName}}</text>
             </label>
       </radio-group>
     </view>
-    <view style="margin-top: 20px;align-items: center;"><button @click="submit" class="uni-btn" plain="true">提交</button></view>
+    <view style="margin-top: 20px;align-items: center;"><button @click="submit" class="uni-btn" type="primary" plain="true">提交</button></view>
   </view>
 </template>
 
@@ -28,29 +27,32 @@
       }
     },
     onLoad() {
-      try{
         uni.getStorage({
           key: 'user',
-          success: res => {
+          success: (res) => {
             if (res.data.userId) {
-              this.$store.commit('updateUser', res.data);
-              this.user = this.$store.state.user;
-              this.week = this.$store.state.week;
-            } else {
-              this.failedLogin();
+              if(res.data.groupId !== 0){
+                uni.showToast({
+                  icon:'none',
+                  title:'分组已选择,即将跳转至首页'
+                })
+                setTimeout(()=> {
+                  uni.reLaunch({
+                    url:'/pages/index/index'
+                  })
+                }, 1000);
+                return
+              }
+              this.updateUser(res.data)
             }
           },
-          fail: () => {
+          fail: (err) => {
             this.failedLogin();
           }
         });
         getGroupsInfo().then(res=>{
           this.groups = res[1].data.groups;
-        })  
-      }catch(e){
-        console.log("获取分组失败")
-      }
-      
+        })   
     },
     methods: {
       ...mapMutations(['updateUser']),
@@ -64,8 +66,6 @@
         }
       },
       submit(){
-        //提交更新用户信息(分组)
-        this.updateUser(this.user);
         //请求，加入分组
         saveGroup(this.params).then(res=>{
           setTimeout(()=>{
@@ -90,9 +90,6 @@
 
 <style>
   
-  *{
-    font-weight: 400;
-  }
   .group-list {
     margin-top: 40px;
   }

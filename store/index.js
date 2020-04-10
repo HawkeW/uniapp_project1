@@ -22,10 +22,7 @@ const store = new Vuex.Store({
       state.hasLogin = true;
       uni.setStorage({
         key: 'user',
-        data: user,
-        complete: () => {
-          console.log("登录，存储user为" + user)
-        }
+        data: user
       })
       
     },

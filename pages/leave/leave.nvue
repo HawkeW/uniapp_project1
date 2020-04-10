@@ -44,35 +44,19 @@ import { askLeave } from '@/common/api.js';
 import wRadio from '@/components/wRadio.vue'
 export default {
   components:{ wRadio },
+  computed:{
+    ...mapState(['user','week'])
+  },
   data() {
     return {
       leaveTime: 0,
-      reason: '',
-      user:{},
-      week:0
-    };
-  },
-  onLoad() {
-    try{
-      uni.getStorage({
-        key: 'user',
-        success: res => {  
-          if (res.data.userId!==0) {
- 
-            this.$store.commit('updateUser', res.data);
-            this.user = this.$store.state.user;
-            this.week = this.$store.state.week;
-          } 
-        }
-      });
-    }catch(e){
-      console.log("leave报错")
+      reason: ''
     }
-    
   },
   methods: {
+    ...mapMutations(['updateUser','setWeek']),
     radioChange(evt) {
-      this.leaveTime = parseInt(evt.target.value);
+      this.leaveTime = parseInt(evt.detail.value);
     },
     leave() {
       let params = {
@@ -81,24 +65,55 @@ export default {
         reason: this.reason,
         groupId: this.user.groupId
       };
-      askLeave(params).then(res => {
-        if (res[1].data.infoCode === 500) {
-          uni.showToast({
-            icon: 'none',
-            title: res[1].data.infoText
-          });
-        } else {
-          setTimeout(() => {
-            uni.reLaunch({ url: '/pages/index/index' });
-          }, 2000);
-          uni.showToast({
-            icon: 'none',
-            title: res[1].data.infoText
-          });
+      uni.request({
+        url: 'http://wuancake.supersuperz.top/leave',
+        method: 'POST',
+        data: params,
+        success: (res) => {
+          if (res.data.infoCode === 500) {
+            uni.showToast({
+              icon: 'none',
+              title: res.data.infoText
+            });
+          } else {
+            setTimeout(() => {
+              uni.reLaunch({ url: '/pages/index/index' });
+            }, 1000);
+            uni.showToast({
+              icon: 'none',
+              title: res.data.infoText
+            });
+          }
+        },
+        fail:(err)=>{
+          uni.showModal({
+            showCancel:false,
+            content:err.errMsg
+          })
         }
-      });
+      })
     }
-  }
+  },
+  onLoad() {
+    uni.getStorage({
+      key:'user',
+      success: (res) => {
+        if(res.data.status!==1){
+          uni.reLaunch({
+            url:'/pages/index/index'
+          })
+          return
+        }
+        this.updateUser(res.data);
+      }
+    });
+    uni.getStorage({
+      key:'week',
+      success: (res) => {
+        this.setWeek(res.data);
+      }
+    });
+  },
 };
 </script>
 

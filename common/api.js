@@ -10,7 +10,6 @@ export function queryRegist(params) {
     url: 'http://wuancake.supersuperz.top/regist',
     method: 'post',
     data: params,
-    
   })
 }
 //登录，返回值user_id，group_id等

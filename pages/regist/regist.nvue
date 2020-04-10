@@ -124,12 +124,16 @@ export default {
             uni.showToast({
               title: '注册成功',
               icon: 'success',
-              mask: true,
-              duration: 2000
+              mask: true
             });
-            uni.reLaunch({
-              url:'/pages/login/login'
-            })
+            
+            setTimeout(()=> {
+              uni.hideToast();
+              uni.reLaunch({
+                url:'/pages/login/login'
+              });
+            }, 1000);
+
           }
 
           this.loading = false;

@@ -1,1 +1,0 @@
-<view><label class="radio"><radio class="radio-btn" value="{{radioValue}}"></radio><text class="radio-name">{{''+radioName}}</text></label></view>

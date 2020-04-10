@@ -39,6 +39,7 @@
 </template>
 
 <script>
+  var url = 'http://wuancake.supersuperz.top'
   import uniIcons from '@/components/uni-icons/uni-icons.vue';
   import {
     mapState,
@@ -48,6 +49,9 @@
     queryLogin
   } from '../../common/api.js';
   export default {
+  computed: {
+      ...mapState(['user', 'week'])
+    },
     data() {
       return {
         loading: false,
@@ -56,58 +60,64 @@
           email: '',
           password: ''
         },
-        currUser:null
+        log:'',
+        isShow:false
       };
     },
     methods: {
+      ...mapMutations(['login', 'updateUser', 'setWeek']),
       handleSubmit() {
         this.loading = true;
-        this.toLogin(this.info);
+        this.toLogin();
       },
-      toLogin(user) {
-        let data= {};
-        //Ptomise登录请求
+      toLogin() {
+        var userInfo = { email:this.info.email, password: this.info.password}
         uni.request({
-        	url: 'http://wuancake.supersuperz.top/login',
-        	method: 'POST',
-        	data: this.info,
+          url:  'http://wuancake.supersuperz.top/login',
+          method:'post',
+          data: userInfo ,
           success: (res) => {
             this.loading = false;
-            //为infoCode=200登录成功
-            data= res.data;
-          	if (data.infoCode === '200') {
-          	  uni.showToast({
-          	    icon: 'none',
-          	    title: '登录成功',
-                duration:1000
-          	  });
-              setTimeout(()=>{
-                //设置用户
-                //vuex记录user,week数据,设置登录状态hasLogin为True
-                // this.updateUser(data);
-                // this.setWeek(data);      
-                this.$store.commit('updateUser',data)
-                this.$store.commit('setWeek',data) 
-                //1s后跳转页面    
-                this.toPage(data.groupId);
-              }, 1000);
-          	} else {
-          	  //为空则提示报错信息
-          	  uni.showToast({
-          	    icon: 'none',
-          	    title: data.infoText
-          	  });
-          	}
-          },
-          fail: (err) => {
-            uni.showModal({
-            	content: err.errMsg,
-            	showCancel: false
-            });
-          }
-        }) 
-      },
-      setUser: function(data) {
+              if (res.data.infoCode === '200') {
+                uni.showToast({
+                  icon: 'none',
+                  title: '登录成功'
+                });
+                setTimeout(() => {
+                  //vuex记录user,week数据,设置登录状态hasLogin为True
+                  this.setUser(res.data);
+                  this.setWeek(res.data.currWeek);
+                  //页面跳转
+                  this.toPage(res.data.groupId);
+                }, 1000);
+              } else if(res.data.status='400'){
+                uni.showToast({
+                  icon: 'none',
+                  title: "登录异常"
+                });
+              }
+              else {
+                //为空则提示报错信息
+                uni.showToast({
+                  icon: 'none',
+                  title: res.data.infoText
+                });
+              }
+            },
+            fail: (err) => {
+              uni.showModal({
+                showCancel:false,
+                content:err.errMsg
+              })
+            },
+            complete: (e) => {
+              this.isShow = true;
+              this.log = e.data
+              this.log2 = this.info.email
+            }
+        })
+        },
+      setUser(data) {
         let params = {
           userId: data.userId,
           groupId: data.groupId,
@@ -115,10 +125,9 @@
           status: data.status,
           userName: data.userName
         };
-        this.$store.commit('login',params)
-        // this.login(params);
+        this.login(params);
       },
-      toPage: function(groupId) {
+      toPage(groupId) {
         if (groupId !== 0) {
           uni.reLaunch({
             url: '/pages/index/index'
@@ -129,7 +138,7 @@
           });
         }
       },
-      changePassword: function() {
+      changePassword() {
         this.showPassword = !this.showPassword;
       }
     }
@@ -137,9 +146,12 @@
 </script>
 
 <style scoped>
+  /* #ifndef APP-NVUE */
   * {
     font-size: 16px;
   }
+  /* #endif */
+
 
   /* #ifndef APP-PLUS */
   text {

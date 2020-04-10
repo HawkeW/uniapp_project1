@@ -2,7 +2,7 @@
   <view class="main">
     <view style="transition:ease;transition-duration: 2s;transition-delay: inherit;" v-if="isReady">
       <view class="text-center">
-        <text class="current-week">第{{ week }}周</text>
+        <text class="current-week">第{{ weekNum }}周</text>
       </view>
       <view class="status-user">
         <view class="user-info text-center">
@@ -18,11 +18,6 @@
           <button class="uni-btn default" type="primary" plain="true" style="color: #016EE0;border-color: #016EE0;">我要请假</button>
         </navigator>
       </view>
-      
-      <view class="btn-block">
-        <button 
-          class="uni-btn default" type="primary" @click="toLogout()" plain="true" style="color: #016EE0;border-color: #016EE0;">退出</button>
-      </view>
     </view>
   </view>
 </template>
@@ -32,32 +27,45 @@ import { getWeeklyStatus } from '../../common/api';
 import { mapState, mapMutations } from 'vuex';
 import weeklyStatus from '../../components/weeklyStatus';
 export default {
+  computed:{
+    ...mapState(['user', 'week'])
+  },
   data() {
     return {
       isReady: false,
-      user:{},
-      week:0
+      weekNum:''
     };
   },
   methods: {
     ...mapMutations(['login', 'updateUser', 'setWeek', 'logout']),
-    requestStatus() {
-      getWeeklyStatus(this.user.userId).then(res => {
-        if (res[1].data.infoCode === 500) {
-          uni.showToast({
-            icon: 'none',
-            title: res[1].data.infoText
-          });
-          return;
+    requestStatus(uid) {
+      uni.request({
+        url: 'http://wuancake.supersuperz.top/main',
+        method: 'POST',
+        data: { userId: uid},
+        success: (res) => {
+          if (res.data.infoCode === 500) {
+            uni.showToast({
+              icon: 'none',
+              title: res.data.infoText
+            });
+            this.failedLogin();
+            return;
+          }
+          try{
+            this.weekNum = res.data.weekNum;
+            //获取用户信息和周信息
+            let params = this.user;
+            params.status = res.data.status;
+            //更新vuex值
+            this.updateUser(params);
+            this.setWeek(res.data.weekNum)
+            this.isReady = true;
+          }catch(e){
+            this.failedLogin();
+          }
         }
-        this.user.status = res[1].data.status;
-        this.week = res[1].data.weekNum;
-        
-        this.$store.commit('updateUser',this.user)
-        this.$store.commit('setWeek',this.week)
-        this.isReady = true;
-      });
-
+      })
     },
     failedLogin() {
       uni.navigateTo({
@@ -65,7 +73,7 @@ export default {
       });
     },
     toLogout() {
-      this.logout();
+     this.logout();
       uni.reLaunch({
         url: '/pages/login/login'
       });
@@ -75,27 +83,19 @@ export default {
     weeklyStatus
   },
   onLoad() {
-      uni.getStorage({
-        key: 'user',
-        success: (res) => {
-          if (res.data.userId) {
-            this.$store.commit('updateUser',res.data);
-            this.user = this.$store.state.user;
-            this.week = this.$store.state.week;
-            // _this.updateUser(res.data);
-            this.requestStatus(this.$store.state.user.userId);
-          } else {
-            this.failedLogin();
-          }
-        },
-        fail: (res) => {
-          this.failedLogin();
-        }
-      });
-      
+    uni.startPullDownRefresh();
   },
   onPullDownRefresh() {
-    this.requestStatus(this.user);
+    uni.getStorage({
+      key: 'user',
+      success: (res) => {
+        if (res.data.userId) {
+          this.requestStatus(res.data.userId); 
+        }else{
+          this.failedLogin();
+        }
+      }
+    });
     setTimeout(function() {
       uni.stopPullDownRefresh();
     }, 1000);

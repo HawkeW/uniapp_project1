@@ -33,15 +33,16 @@ import { mapState, mapMutations } from 'vuex';
 import { submitWeekly } from '@/common/api.js';
 
 export default {
+  computed:{
+    ...mapState(['user','week']),
+  },
   onLoad(){
-    try{
       uni.getStorage({
         key: 'user',
         success: res => {
           if (res.data.userId) {
-            this.$store.commit('updateUser',res.data);
-            this.user = this.$store.state.user;
-            this.week = this.$store.state.week;
+            let _user = res.data;
+            this.updateUser(_user);
           } else{
             uni.showModal({
               content:err.errMsg,
@@ -60,7 +61,7 @@ export default {
         key: 'week',
         success: res => {
           if (res.data) {
-            this.$store.commit('setWeek', res.data);
+            this.setWeek(res.data)
           } else {
             this.failedLogin();
           }
@@ -69,9 +70,6 @@ export default {
           this.failedLogin();
         }
       });
-    }catch(e){
-      console.log("submit出错")
-    }
     
 
   },
@@ -85,12 +83,11 @@ export default {
         plane: '',
         url: '',
         date: ''
-      },
-      user:{},
-      week:0
+      }
     };
   },
   methods: {
+    ...mapMutations(['updateUser','setWeek']),
     submit() {
       if (!this.checkFormat()) {
         uni.showToast({
@@ -99,29 +96,34 @@ export default {
         });
         return;
       }
-      let params = this.weekly;
+
       this.weekly.userId = this.user.userId;
       this.weekly.groupId = this.user.groupId;
       this.weekly.date = this.nowTime();
-
-      submitWeekly(params).then(res => {
-        if (res[1].data.infoCode === 500) {
-          uni.showToast({
-            icon: 'none',
-            title: res[1].data.infoText
-          });
-        } else {
-          setTimeout(() => {
-            uni.reLaunch({
-              url: '/pages/main/main'
+      let params = this.weekly;
+      uni.request({
+        url: 'http://wuancake.supersuperz.top/submit',
+        method: 'post',
+        data: params,
+        success:(res)=>{
+          if (res.data.infoCode === 500) {
+            uni.showToast({
+              icon: 'none',
+              title: res.data.infoText
             });
-          }, 2000);
-          uni.showToast({
-            icon: 'none',
-            title: res[1].data.infoText
-          });
+          } else {
+            setTimeout(() => {
+              uni.reLaunch({
+                url: '/pages/index/index'
+              });
+            }, 2000);
+            uni.showToast({
+              icon: 'none',
+              title: res.data.infoText
+            });
+          }
         }
-      });
+      })
     },
     nowTime() {
       let nowTime = new Date();
