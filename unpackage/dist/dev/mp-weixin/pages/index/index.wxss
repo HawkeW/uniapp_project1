@@ -1,0 +1,234 @@
+
+view,
+swiper-item,
+scroll-view {
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-box-orient:vertical;
+  -webkit-box-direction:normal;
+  -webkit-flex-direction:column;
+          flex-direction:column;
+  -webkit-flex-shrink: 0;
+          flex-shrink: 0;
+  -webkit-box-flex: 0;
+  -webkit-flex-grow: 0;
+          flex-grow: 0;
+  -webkit-flex-basis: auto;
+          flex-basis: auto;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+          align-items: stretch;
+  -webkit-align-content: flex-start;
+          align-content: flex-start;
+}
+view,
+image,
+input,
+scroll-view,
+swiper,
+swiper-item,
+text,
+textarea,
+video {
+  position: relative;
+  border: 0px solid #000000;
+  box-sizing: border-box;
+}
+swiper-item {
+  position: absolute;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* @import url("@/common/uni.css"); */
+
+
+text {
+  font-weight: 600;
+}
+
+
+.main {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+}
+.text-center {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+}
+.current-week {
+  font-weight: bold;
+  font-family: PingFang;
+  margin-top: 96rpx;
+  font-size: 26px;
+  line-height: 37px;
+  height: 37px;
+  padding-top: 0;
+}
+.ask-leave {
+  color: #016EE0;
+}
+.status-user {
+  margin-top: 34rpx;
+}
+.wrapper {
+  margin-top: 96rpx;
+  margin-bottom: 140rpx;
+}
+.user-info {
+  /* margin: 12upx; */
+  font-size: 14px;
+  font-family: PingFang;
+  font-weight: 500;
+  opacity: 1;
+}
+.btn-block{
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+  margin-top:14px;
+}
+.uni-btn {
+  width: 406rpx;
+  border-radius: 0;
+}
+
+
+
+

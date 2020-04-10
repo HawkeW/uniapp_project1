@@ -1,0 +1,207 @@
+<template>
+  <view class="leave">
+    <view class="header">
+      <text class="current-week">第{{ week }}周</text>
+      <text class="user-info">{{ user.groupName }} :{{ user.userName }}</text>
+    </view>
+    <view class="content">
+      <form @submit="leave">
+      <view class="input-area">
+        <text class="input-title">请假理由</text>
+        <input class="uni-input" v-model="reason" placeholder="必填" />
+      </view>
+      <view class="input-area">
+        <text class="input-title">请假期限（必填）</text>
+        <radio-group name="" @change="radioChange" class="slection-wrapper" >
+          <label class="selection">
+            <radio class="radio-btn" :value="'1'" />
+            <text class="radio-name">一周</text>
+          </label>
+          
+          <label class="selection">
+            
+            <radio class="radio-btn" :value="'2'" />
+            <text class="radio-name">两周</text>
+          </label>
+          <label class="selection">
+            <radio class="radio-btn" :value="'3'" />
+            <text class="radio-name">三周</text>
+          </label>
+        </radio-group>
+      </view>
+        <view class="leave-block">
+          <button style="margin-top: 20px;" class="uni-btn" form-type="submit" type="primary">提交</button>
+        </view>
+      </form>
+    </view>
+     
+  </view>
+</template>
+
+<script>
+import { mapState,mapMutations } from 'vuex';
+import { askLeave } from '@/common/api.js';
+import wRadio from '@/components/wRadio.vue'
+export default {
+  components:{ wRadio },
+  data() {
+    return {
+      leaveTime: 0,
+      reason: '',
+      user:{},
+      week:0
+    };
+  },
+  onLoad() {
+    try{
+      uni.getStorage({
+        key: 'user',
+        success: res => {  
+          if (res.data.userId!==0) {
+ 
+            this.$store.commit('updateUser', res.data);
+            this.user = this.$store.state.user;
+            this.week = this.$store.state.week;
+          } 
+        }
+      });
+    }catch(e){
+      console.log("leave报错")
+    }
+    
+  },
+  methods: {
+    radioChange(evt) {
+      this.leaveTime = parseInt(evt.target.value);
+    },
+    leave() {
+      let params = {
+        userId: this.user.userId,
+        weekNum: this.leaveTime,
+        reason: this.reason,
+        groupId: this.user.groupId
+      };
+      askLeave(params).then(res => {
+        if (res[1].data.infoCode === 500) {
+          uni.showToast({
+            icon: 'none',
+            title: res[1].data.infoText
+          });
+        } else {
+          setTimeout(() => {
+            uni.reLaunch({ url: '/pages/index/index' });
+          }, 2000);
+          uni.showToast({
+            icon: 'none',
+            title: res[1].data.infoText
+          });
+        }
+      });
+    }
+  }
+};
+</script>
+
+<style scoped>
+.uni-input {
+    font-size: 14px;
+    /* #ifndef APP-PLUS */
+    display: block;
+    /* #endif */
+    
+    height: 60upx;
+    line-height: 14px;
+    margin-top: 30upx;
+  }
+.leave {
+  margin-top: 10rpx;
+  margin-left: 48rpx;
+  margin-right: 48rpx;
+  padding: 0 0;
+  font-size: 16px;
+}
+
+.current-week {
+  margin-top: 60rpx;
+  font-size: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-weight: bold;
+}
+.user-info {
+  margin-top: 24rpx;
+  font-size: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-weight: 600;
+}
+.input-area {
+  /* height: 192rpx; */
+  margin-top: 12rpx;
+  font-size: 14px;
+}
+.input-title {
+  font-weight: 600;
+  height: 28rpx;
+  font-size: 28rpx;
+  line-height: 28rpx;
+  margin-top: 48rpx;
+  padding-bottom: 10rpx;
+}
+
+/* #ifndef APP-PLUS */
+.input-area > input {
+  font-size: 14px;
+  display: block;
+  height: 60upx;
+  line-height: 14px;
+  margin-top: 30upx;
+}
+/* #endif */
+
+.slection-wrapper {
+  margin-top: 15px;
+  font-size: 14px;
+  /* #ifndef APP-PLUS */
+  display: flex;
+  /* #endif */
+ flex-direction:row;
+ /*  justify-content:center; */
+}
+.selection{
+  /* #ifndef APP-PLUS */
+  display: flex;
+  /* #endif */
+  flex-direction:row;
+  justify-content:flex-start; 
+}
+
+  .radio-btn{
+    margin-bottom: 1px;
+    transform: scale(0.8);
+  }
+  .radio-name{
+    /* flex: 1; */
+    margin-left: 20rpx;
+    margin-right: 40rpx;
+    text-align: left;
+  }
+  .leave-block{
+    align-items: center;
+  }
+.uni-btn {
+  width: 406rpx;
+  border-radius: 0;
+}
+/* #ifdef APP-PLUS-NVUE */
+.default{
+  color:#016EE0;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #016EE0;
+}
+.primary{
+  background-color: #016EE0;
+}
+/* #endif */
+</style>

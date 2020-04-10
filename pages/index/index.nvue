@@ -1,0 +1,169 @@
+<template>
+  <view class="main">
+    <view style="transition:ease;transition-duration: 2s;transition-delay: inherit;" v-if="isReady">
+      <view class="text-center">
+        <text class="current-week">第{{ week }}周</text>
+      </view>
+      <view class="status-user">
+        <view class="user-info text-center">
+          <text class="user-info">{{ user.groupName }} {{ user.userName }}</text>
+        </view>
+      </view>
+      <view class="wrapper"><weekly-status class="status" :status="user.status"></weekly-status></view>
+      <view v-if="user.status === 1">
+        <navigator url="/pages/submit/submit">
+          <button type="primary" class="uni-btn primary" >提交周报</button>
+        </navigator>
+        <navigator class="btn-block"  url="/pages/leave/leave">
+          <button class="uni-btn default" type="primary" plain="true" style="color: #016EE0;border-color: #016EE0;">我要请假</button>
+        </navigator>
+      </view>
+      
+      <view class="btn-block">
+        <button 
+          class="uni-btn default" type="primary" @click="toLogout()" plain="true" style="color: #016EE0;border-color: #016EE0;">退出</button>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import { getWeeklyStatus } from '../../common/api';
+import { mapState, mapMutations } from 'vuex';
+import weeklyStatus from '../../components/weeklyStatus';
+export default {
+  data() {
+    return {
+      isReady: false,
+      user:{},
+      week:0
+    };
+  },
+  methods: {
+    ...mapMutations(['login', 'updateUser', 'setWeek', 'logout']),
+    requestStatus() {
+      getWeeklyStatus(this.user.userId).then(res => {
+        if (res[1].data.infoCode === 500) {
+          uni.showToast({
+            icon: 'none',
+            title: res[1].data.infoText
+          });
+          return;
+        }
+        this.user.status = res[1].data.status;
+        this.week = res[1].data.weekNum;
+        
+        this.$store.commit('updateUser',this.user)
+        this.$store.commit('setWeek',this.week)
+        this.isReady = true;
+      });
+
+    },
+    failedLogin() {
+      uni.navigateTo({
+        url: '/pages/login/login'
+      });
+    },
+    toLogout() {
+      this.logout();
+      uni.reLaunch({
+        url: '/pages/login/login'
+      });
+    }
+  },
+  components: {
+    weeklyStatus
+  },
+  onLoad() {
+      uni.getStorage({
+        key: 'user',
+        success: (res) => {
+          if (res.data.userId) {
+            this.$store.commit('updateUser',res.data);
+            this.user = this.$store.state.user;
+            this.week = this.$store.state.week;
+            // _this.updateUser(res.data);
+            this.requestStatus(this.$store.state.user.userId);
+          } else {
+            this.failedLogin();
+          }
+        },
+        fail: (res) => {
+          this.failedLogin();
+        }
+      });
+      
+  },
+  onPullDownRefresh() {
+    this.requestStatus(this.user);
+    setTimeout(function() {
+      uni.stopPullDownRefresh();
+    }, 1000);
+  }
+};
+</script>
+
+<style>
+/* @import url("@/common/uni.css"); */
+
+/* #ifndef APP-PLUS */
+text {
+  font-weight: 600;
+}
+/* #endif */
+
+.main {
+  align-items: center;
+}
+.text-center {
+  align-items: center;
+}
+.current-week {
+  font-weight: bold;
+  font-family: PingFang;
+  margin-top: 96rpx;
+  font-size: 26px;
+  line-height: 37px;
+  height: 37px;
+  padding-top: 0;
+}
+
+.ask-leave {
+  color: #016EE0;
+}
+
+.status-user {
+  margin-top: 34rpx;
+}
+.wrapper {
+  margin-top: 96rpx;
+  margin-bottom: 140rpx;
+}
+.user-info {
+  /* margin: 12upx; */
+  font-size: 14px;
+  font-family: PingFang;
+  font-weight: 500;
+  opacity: 1;
+}
+.btn-block{
+  align-items: center;
+  margin-top:14px;
+}
+.uni-btn {
+  width: 406rpx;
+  border-radius: 0;
+}
+/* #ifdef APP-PLUS-NVUE */
+.default{
+  color:#016EE0;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #016EE0;
+}
+.primary{
+  background-color: #016EE0;
+}
+/* #endif */
+
+</style>

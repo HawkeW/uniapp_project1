@@ -1,0 +1,143 @@
+<template>
+  <view>
+    <view class="group-list">
+      <radio-group @change="radioChange" class="group">
+          <label  class="group-item" v-for="(item, index) in groups" :key="item.id">
+            
+              <radio class="radio-btn" :value="item.id.toString()" :checked="index === current" /> <text class="radio-name">{{item.groupName}}</text>
+            </label>
+      </radio-group>
+    </view>
+    <view style="margin-top: 20px;align-items: center;"><button @click="submit" class="uni-btn" plain="true">提交</button></view>
+  </view>
+</template>
+
+<script>
+  import { getGroupsInfo,saveGroup } from '@/common/api.js'
+  import { mapState, mapMutations } from 'vuex'
+  export default {
+    computed:{
+      params(){
+        return { userId:this.user.userId, groupId:this.user.groupId };
+      }
+    },
+    data() {
+      return {
+        current: '',
+        groups: []
+      }
+    },
+    onLoad() {
+      try{
+        uni.getStorage({
+          key: 'user',
+          success: res => {
+            if (res.data.userId) {
+              this.$store.commit('updateUser', res.data);
+              this.user = this.$store.state.user;
+              this.week = this.$store.state.week;
+            } else {
+              this.failedLogin();
+            }
+          },
+          fail: () => {
+            this.failedLogin();
+          }
+        });
+        getGroupsInfo().then(res=>{
+          this.groups = res[1].data.groups;
+        })  
+      }catch(e){
+        console.log("获取分组失败")
+      }
+      
+    },
+    methods: {
+      ...mapMutations(['updateUser']),
+      //获取选择的分组id
+      radioChange: function(evt) {
+        for (let i = 0; i < this.groups.length; i++) {
+          if (this.groups[i].id.toString() === evt.target.value) {
+            this.user.groupId = this.groups[i].id;//更改user的groupId值
+            break;
+          }
+        }
+      },
+      submit(){
+        //提交更新用户信息(分组)
+        this.updateUser(this.user);
+        //请求，加入分组
+        saveGroup(this.params).then(res=>{
+          setTimeout(()=>{
+            if(res[1].data.infoCode === 500){
+              return 
+            }else{
+              uni.reLaunch({
+                 url: '/pages/login/login'
+               })
+            }
+          }, 2000);
+          uni.showToast({
+            icon:'none',
+            title:res[1].data.infoText
+          })
+        })
+
+      }
+    }
+  }
+</script>
+
+<style>
+  
+  *{
+    font-weight: 400;
+  }
+  .group-list {
+    margin-top: 40px;
+  }
+  .group {
+    
+  }
+  .group-item{
+    /* #ifndef APP-NVUE */
+    display: flex;
+    box-sizing:border-box;
+    border-width: 0;
+    /* #endif */
+     padding-top: 17px;
+    margin-left: 15px;
+    height: 56px;
+    font-size: 17px;
+    line-height: 17px;
+    border-bottom-width: 1px;
+    border-bottom-color: #eeeeee;
+    border-style: solid;
+    flex-direction: row;
+  }
+  .radio-btn{
+    margin-bottom: 1px;
+    transform: scale(0.8);
+  }
+  .radio-name{
+    /* flex: 1; */
+    margin-top: 6px;
+    margin-left: 13px;
+    text-align: left;
+  }
+.uni-btn {
+  width: 406rpx;
+  border-radius: 0;
+}
+/* #ifdef APP-PLUS-NVUE */
+.default{
+  color:#016EE0;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #016EE0;
+}
+.primary{
+  background-color: #016EE0;
+}
+/* #endif */
+</style>

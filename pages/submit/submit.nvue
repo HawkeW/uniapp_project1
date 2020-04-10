@@ -1,0 +1,205 @@
+<template>
+  <view class="weekly">
+    <form @submit="submit" @reset="">    
+    <view class="header">
+      <text class="current-week">第{{ week }}周</text>
+      <text class="user-info">{{ user.groupName }} :{{ user.userName }}</text>
+    </view>
+    <view class="content">
+      <view class="input-area">
+        <text class="input-title">本周完成</text>
+        <input class="input-content" v-model="weekly.complete" placeholder="必填" />
+      </view>
+      <view class="input-area">
+        <text class="input-title">所遇问题</text>
+        <input class="input-content" v-model="weekly.trouble" placeholder="必填" />
+      </view>
+      <view class="input-area">
+        <text class="input-title">下周计划</text>
+        <input class="input-content" v-model="weekly.plane" placeholder="必填" />
+      </view>
+      <view class="input-area">
+        <text class="input-title">作品链接</text>
+        <input class="input-content" v-model="weekly.url" placeholder="GitHub、站酷等，选填" />
+      </view>
+    </view>
+    <view class="btn-block"><button class="uni-btn" form-type="submit" type="primary">提交</button></view>
+    </form>
+  </view>
+</template>
+
+<script>
+import { mapState, mapMutations } from 'vuex';
+import { submitWeekly } from '@/common/api.js';
+
+export default {
+  onLoad(){
+    try{
+      uni.getStorage({
+        key: 'user',
+        success: res => {
+          if (res.data.userId) {
+            this.$store.commit('updateUser',res.data);
+            this.user = this.$store.state.user;
+            this.week = this.$store.state.week;
+          } else{
+            uni.showModal({
+              content:err.errMsg,
+              showCancel:false
+            })
+          }
+        },
+        fail: (err) => {
+          uni.showModal({
+            content:err.errMsg,
+            showCancel:false
+          })
+        }
+      });
+      uni.getStorage({
+        key: 'week',
+        success: res => {
+          if (res.data) {
+            this.$store.commit('setWeek', res.data);
+          } else {
+            this.failedLogin();
+          }
+        },
+        fail: () => {
+          this.failedLogin();
+        }
+      });
+    }catch(e){
+      console.log("submit出错")
+    }
+    
+
+  },
+  data() {
+    return {
+      weekly: {
+        userId: 0,
+        groupId: 0,
+        complete: '',
+        trouble: '',
+        plane: '',
+        url: '',
+        date: ''
+      },
+      user:{},
+      week:0
+    };
+  },
+  methods: {
+    submit() {
+      if (!this.checkFormat()) {
+        uni.showToast({
+          icon: 'none',
+          title: '请填写全部必填项后提交'
+        });
+        return;
+      }
+      let params = this.weekly;
+      this.weekly.userId = this.user.userId;
+      this.weekly.groupId = this.user.groupId;
+      this.weekly.date = this.nowTime();
+
+      submitWeekly(params).then(res => {
+        if (res[1].data.infoCode === 500) {
+          uni.showToast({
+            icon: 'none',
+            title: res[1].data.infoText
+          });
+        } else {
+          setTimeout(() => {
+            uni.reLaunch({
+              url: '/pages/main/main'
+            });
+          }, 2000);
+          uni.showToast({
+            icon: 'none',
+            title: res[1].data.infoText
+          });
+        }
+      });
+    },
+    nowTime() {
+      let nowTime = new Date();
+      return nowTime.getFullYear() + '-' + (nowTime.getMonth() + 1) + '-' + nowTime.getDate() + ' ' + nowTime.getHours() + ':' + nowTime.getMinutes() + ':' + nowTime.getSeconds();
+    },
+    checkFormat() {
+      return this.weekly.complete && this.weekly.trouble && this.weekly.plane;
+    }
+  }
+};
+</script>
+
+<style>
+.weekly {
+  margin-top: 10rpx;
+  margin-left: 48rpx;
+  margin-right: 48rpx;
+  padding: 0 0;
+  font-size: 32upx;
+}
+.current-week {
+  margin-top: 60rpx;
+  font-size: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-weight: bold;
+}
+.user-info {
+  margin-top: 24rpx;
+  font-size: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-weight: 600;
+}
+.input-area {
+  height: 192rpx;
+  margin-top: 12rpx;
+  font-size: 14px;
+}
+.input-title {
+  font-weight: 600;
+  height: 28rpx;
+  font-size: 28rpx;
+  line-height: 28rpx;
+  margin-top: 48rpx;
+  padding-bottom: 10rpx;
+}
+.input-content{
+  margin-top: 15px;
+  font-size: 14px;
+}
+/* #ifndef APP-PLUS */
+.input-area > input {
+  font-size: 14px;
+  display: block;
+  height: 60upx;
+  line-height: 14px;
+  margin-top: 30upx;
+}
+/* #endif */
+
+.btn-block{
+  align-items: center;
+  margin-top:20px;
+}
+.uni-btn {
+  width: 406rpx;
+  border-radius: 0;
+}
+/* #ifdef APP-PLUS-NVUE */
+.default{
+  color:#016EE0;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #016EE0;
+}
+.primary{
+  background-color: #016EE0;
+}
+/* #endif */
+</style>

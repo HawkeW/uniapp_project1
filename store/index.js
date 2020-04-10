@@ -4,41 +4,50 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-	state: {
-		forcedLogin: true,
-		hasLogin: true,
-		user:{ },
-    week:229
-	},
-	mutations: {
-		LOGIN(state, user) {
-			state.user = user;
-			state.hasLogin = true;
+  state: {
+    hasLogin: false, //考勤业务代码
+    user: {
+      userId: null,
+      groupId: null,
+      groupName:'1',
+      status: null,
+      userName: null,
+    },
+    week: null
+  },
+  mutations: {
+    //考勤登录逻辑
+    login(state, user) {
+      state.user = user;
+      state.hasLogin = true;
       uni.setStorage({
-          key: 'user',
-          data: user
-      });
-		},
-		LOGOUT(state) {
-			state.userName = "";
-			state.hasLogin = false;
+        key: 'user',
+        data: user,
+        complete: () => {
+          console.log("登录，存储user为" + user)
+        }
+      })
+      
+    },
+    logout(state) {
       uni.clearStorage();
-		},
-    SET_WEEK(state, week){
+      state.hasLogin = false;
+    },
+    setWeek(state, week) {
       state.week = week;
       uni.setStorage({
-          key: 'week',
-          data: week
-      });
+        key: 'week',
+        data: week
+      })
     },
-    UPDATE_USER(state, user){
+    updateUser(state, user) {
       state.user = user;
       uni.setStorage({
-          key: 'user',
-          data: user
-      });
+        key: 'user',
+        data: user
+      })
     },
-	}
+  }
 })
 
 export default store

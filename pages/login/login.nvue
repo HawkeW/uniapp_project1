@@ -1,0 +1,227 @@
+<template>
+  <view>
+    <view class="login-head">
+      <view class="login-logo">
+        <image src="../../static/logo.png" mode="center"></image>
+      </view>
+    </view>
+    <view class="">
+      <form @submit="handleSubmit">
+        <view class="login-input">
+          <view class="uni-form-item uni-column">
+            <view class="uni-input-wrapper">
+              <text class="input-header">邮箱</text>
+              <input class="uni-input" placeholder="请输入邮箱" v-model="info.email" />
+            </view>
+          </view>
+          <view class="uni-form-item uni-column">
+            <view class="uni-input-wrapper">
+              <text class="input-header">密码</text>
+              <input class="uni-input" placeholder="请输入密码" :password="showPassword" v-model="info.password" />
+              <text v-if="showPassword" class="uni-icon" @click="changePassword">&#xe822</text>
+              <text v-else class="uni-icon" @click="changePassword">&#xe824</text>
+            </view>
+          </view>
+        </view>
+        <view class="login-btn">
+          <button class="uni-btn" form-type="submit" type="primary" :loading="loading">登录</button>
+          <navigator style="margin-top:14px" url="../regist/regist">
+            <button 
+              class="uni-btn" 
+              type="primary" 
+              plain="true" 
+              style="border-color:#016EE0;color: #016EE0;">注册</button>
+          </navigator>
+        </view>
+      </form>
+    </view>
+  </view>
+</template>
+
+<script>
+  import uniIcons from '@/components/uni-icons/uni-icons.vue';
+  import {
+    mapState,
+    mapMutations
+  } from 'vuex';
+  import {
+    queryLogin
+  } from '../../common/api.js';
+  export default {
+    data() {
+      return {
+        loading: false,
+        showPassword: true,
+        info: {
+          email: '',
+          password: ''
+        },
+        currUser:null
+      };
+    },
+    methods: {
+      handleSubmit() {
+        this.loading = true;
+        this.toLogin(this.info);
+      },
+      toLogin(user) {
+        let data= {};
+        //Ptomise登录请求
+        uni.request({
+        	url: 'http://wuancake.supersuperz.top/login',
+        	method: 'POST',
+        	data: this.info,
+          success: (res) => {
+            this.loading = false;
+            //为infoCode=200登录成功
+            data= res.data;
+          	if (data.infoCode === '200') {
+          	  uni.showToast({
+          	    icon: 'none',
+          	    title: '登录成功',
+                duration:1000
+          	  });
+              setTimeout(()=>{
+                //设置用户
+                //vuex记录user,week数据,设置登录状态hasLogin为True
+                // this.updateUser(data);
+                // this.setWeek(data);      
+                this.$store.commit('updateUser',data)
+                this.$store.commit('setWeek',data) 
+                //1s后跳转页面    
+                this.toPage(data.groupId);
+              }, 1000);
+          	} else {
+          	  //为空则提示报错信息
+          	  uni.showToast({
+          	    icon: 'none',
+          	    title: data.infoText
+          	  });
+          	}
+          },
+          fail: (err) => {
+            uni.showModal({
+            	content: err.errMsg,
+            	showCancel: false
+            });
+          }
+        }) 
+      },
+      setUser: function(data) {
+        let params = {
+          userId: data.userId,
+          groupId: data.groupId,
+          groupName: data.groupName,
+          status: data.status,
+          userName: data.userName
+        };
+        this.$store.commit('login',params)
+        // this.login(params);
+      },
+      toPage: function(groupId) {
+        if (groupId !== 0) {
+          uni.reLaunch({
+            url: '/pages/index/index'
+          });
+        } else {
+          uni.reLaunch({
+            url: '/pages/group/group'
+          });
+        }
+      },
+      changePassword: function() {
+        this.showPassword = !this.showPassword;
+      }
+    }
+  };
+</script>
+
+<style scoped>
+  * {
+    font-size: 16px;
+  }
+
+  /* #ifndef APP-PLUS */
+  text {
+    font-size: 32rpx;
+    margin: 0;
+    padding: 0;
+  }
+
+  button {
+    width: 203px;
+  }
+
+  /* #endif */
+  .login-logo {
+    /* #ifndef APP-NVUE */
+    margin: 0 auto;
+    /* #endif */
+  }
+
+  .uni-input-wrapper {
+    /* #ifndef APP-NVUE */
+    display: flex;
+    /* #endif */
+    /*  padding: 4px 13px; */
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background-color: #ffffff;
+    height: 56px;
+    border-bottom-width: 2rpx;
+    border-bottom-color: #eeeeee;
+  }
+
+  .uni-input {
+    line-height: 32rpx;
+    font-size: 32rpx;
+    height: 100rpx;
+    /* #ifndef APP-PLUS */
+    margin-top: 6rpx;
+    /* #endif */
+    flex: 1;
+  }
+
+  .login-input {
+    margin-bottom: 60rpx;
+  }
+
+  .input-header {
+    margin-left: 30rpx;
+    margin-right: 70rpx;
+    margin-top: 30rpx;
+  }
+
+  .uni-icon {
+    font-family: uniicons;
+    font-size: 24px;
+    font-weight: normal;
+    font-style: normal;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    margin-top: 30rpx;
+    color: #999999;
+    margin-right: 60rpx;
+  }
+
+  .uni-eye-active {
+    color: #007aff;
+  }
+
+  .login-btn {
+    align-items: center;
+  }
+
+  .uni-btn {
+    width: 406rpx;
+    border-radius: 0;
+  }
+
+  .default {
+    color: #016EE0;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-color: #007AFF;
+  }
+</style>

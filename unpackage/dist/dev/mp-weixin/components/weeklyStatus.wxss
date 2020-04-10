@@ -1,0 +1,34 @@
+
+.status-info {
+  position: relative;
+}
+.text-center{
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+          align-items: center;
+}
+.left-text {
+  height: 56rpx;
+  font-size: 18px;
+  font-family: PingFang;
+  font-weight: 600;
+  line-height: 56rpx;
+  opacity: 1;
+}
+.left-detail {
+  /* width: 558upx; */
+  margin-top: 24rpx;
+  line-height: 64rpx;
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+}
+.num {
+  /* width: 558upx; */
+  margin-top: 24rpx;
+  line-height: 64rpx;
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+}
+

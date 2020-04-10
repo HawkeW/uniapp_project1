@@ -1,0 +1,293 @@
+<template>
+  <view>
+    <form @submit="handleSubmit" @reset="" style="margin-top:40px">
+      <view class="signup-info">
+        <view class="uni-form-item uni-column">
+          <view class="uni-input-wrapper">
+            <text class="input-header">昵称</text>
+            <input class="uni-input" name="nickname" placeholder="请输入昵称" />
+          </view>
+        </view>
+        <view class="uni-form-item uni-column">
+          <view class="uni-input-wrapper">
+            <text class="input-header">邮箱</text>
+            <input class="uni-input" name="email" placeholder="请输入邮箱" />
+          </view>
+        </view>
+        <view class="uni-form-item uni-column">
+          <view class="uni-input-wrapper">
+            <text class="input-header">QQ号</text>
+            <input class="uni-input" name="QQ" type="number" placeholder="请输入QQ号" />
+          </view>
+        </view>
+        <view class="uni-form-item uni-column">
+          <view class="uni-input-wrapper">
+            <text class="input-header">密码</text>
+            <input name="password" class="uni-input" placeholder="请输入密码" :password="showPassword" />
+            <text v-if="showPassword" class="uni-icon" @click="changePassword">&#xe822</text>
+            <text v-else class="uni-icon" @click="changePassword">&#xe824</text>
+          </view>
+        </view>
+        <view class="uni-form-item uni-column">
+          <view class="uni-input-wrapper">
+            <text class="input-header">确认密码</text>
+            <input name="password2" class="uni-input" placeholder="请确认密码" :password="showPassword2" />
+            <text v-if="showPassword2" class="uni-icon" @click="changePassword2">&#xe822</text>
+            <text v-else class="uni-icon" @click="changePassword2">&#xe824</text>
+          </view>
+        </view>
+      </view>
+      <view class="regist-btn">
+        <button class="uni-btn default" type="primary" plain="true" style="color: #016EE0;border-color: #016EE0;" form-type="submit">注册</button>
+      </view>
+    </form>
+  </view>
+</template>
+
+<script>
+   import uniIcons from '@/components/uni-icons/uni-icons.vue';
+var graceChecker = require('../../common/graceChecker.js');
+export default {
+  data() {
+    return {
+      loading: false,
+      showPassword: true,
+      showPassword2: true
+    };
+  },
+  methods: {
+    handleSubmit: function(e) {
+      this.loading = true;
+      //定义表单规则
+      var rule = [
+        { name: 'nickname', checkType: 'notnull', checkRule: '4,16', errorMsg: '请填写昵称后再提交' },
+        { name: 'nickname', checkType: 'string', checkRule: '4,16', errorMsg: '字符长度4-16' },
+        { name: 'email', checkType: 'notnull', checkRule: '', errorMsg: '请填写邮箱后再提交' },
+        { name: 'email', checkType: 'email', checkRule: '', errorMsg: '邮箱格式错误' },
+        { name: 'QQ', checkType: 'notnull', checkRule: '', errorMsg: '请填写QQ后再提交' },
+        { name: 'password', checkType: 'notnull', errorMsg: '请填写密码后再提交' },
+        { name: 'password2', checkType: 'notnull', errorMsg: '请输入确认密码后再提交' }
+      ];
+      // var rule3 = [
+      //   { name: 'email', checkType: 'notnull', checkRule: '', errorMsg: '请填写邮箱后再提交' }
+      // ];
+      var rule2 = [
+        { name: 'nickname', checkType: 'notnull', checkRule: '4,16', errorMsg: '请填写昵称后再提交' },
+        { name: 'nickname', checkType: 'string', checkRule: '4,16', errorMsg: '字符长度4-16' },
+        { name: 'email', checkType: 'notnull', checkRule: '', errorMsg: '请填写邮箱后再提交' },
+        { name: 'email', checkType: 'email', checkRule: '', errorMsg: '邮箱格式错误' },
+        { name: 'QQ', checkType: 'notnull', checkRule: '', errorMsg: '请填写QQ后再提交' },
+        { name: 'password', checkType: 'notnull', errorMsg: '请填写密码后再提交' },
+        { name: 'password2', checkType: 'notnull', errorMsg: '请输入确认密码后再提交' }
+      ];
+      // let nameRule = 
+      //进行表单检查
+      var formData = e.detail.value;
+      var checkRes = graceChecker.check(formData, rule);
+      // var checkRes2 = graceChecker.check(formData, rule2);
+      // var checkRes3 = graceChecker.check(formData, rule3)
+      var checkPassword = formData.password === formData.password2 ? true : false;
+      
+      if (checkRes && checkPassword) {
+        this.queryReg(formData);
+        //发送请求
+        uni.showToast({ title: '验证通过!', icon: 'none' });
+      } else {
+        uni.showToast({ title: graceChecker.error, icon: 'none' });
+      }
+    },
+    queryReg: function(form) {
+      var user = {
+        QQ: '',
+        email: '',
+        userName: '',
+        password: ''
+      };
+      user.email = form.email;
+      user.QQ = form.QQ;
+      user.userName = form.nickname;
+      user.password = form.password;
+      
+      uni
+        .request({
+          url: 'http://wuancake.supersuperz.top/regist',
+          method: 'POST',
+          data: user
+        })
+        .then(res => {
+          if (res[1].data.infoCode === '500') {
+            uni.showToast({
+              icon: 'none',
+              title: res[1].data.infoText
+            });
+          } else {
+            uni.showToast({
+              title: '注册成功',
+              icon: 'success',
+              mask: true,
+              duration: 2000
+            });
+            uni.reLaunch({
+              url:'/pages/login/login'
+            })
+          }
+
+          this.loading = false;
+        })
+        .catch(err => {
+          uni.showModal({
+            content: err.errMsg,
+            showCancel: false
+          });
+
+          this.loading = false;
+        });
+    },
+    checkNone(form){
+      if(!form.nickname){
+        uni.showToast({
+          icon:'none',
+          title:'请填写昵称后再注册'
+        })
+        return false
+      }
+      else if(!form.email){
+        uni.showToast({
+          icon:'none',
+          title:'请填写邮箱后再注册'
+        });
+        return false;
+      }
+      else if(!form.QQ){
+        uni.showToast({
+          icon:'none',
+          title:'请填写QQ号后再注册'
+        });
+        return false;
+      }
+      else if(!form.password){
+        uni.showToast({
+          icon:'none',
+          title:'请填写密码后再注册'
+        });
+        return false;
+      }
+      else if(!form.password2){
+        uni.showToast({
+          icon:'none',
+          title:'请填写确认密码后再注册'
+        });
+        return false;
+      }
+      return true;
+    },
+    changePassword: function() {
+      this.showPassword = !this.showPassword;
+    },
+    changePassword2: function() {
+      this.showPassword2 = !this.showPassword2;
+    }
+  }
+};
+</script>
+
+<style scoped>
+.uni-input-wrapper {
+  /* #ifndef APP-NVUE */
+  display: flex;
+  /* #endif */
+  padding: 4px 13px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  background-color: #ffffff;
+  height: 56px;
+  border-bottom-width: 1px;
+  border-bottom-color: #EEEEEE;
+}
+
+.input-header{
+  margin-left: 15px;
+  /* margin-right: 70rpx; */
+  width: 80px;
+  font-size: 15px;
+  margin-top: 15px;
+}
+.uni-input {
+  font-size: 15px;
+  line-height: 15px;
+  /* #ifndef APP-PLUS */
+  margin-top: 4px;
+  /* #endif */
+  line-height: 1.8;
+  height: 45px;
+  line-height: 14px;
+  font-size: 14px;
+  padding: 0px;
+  flex: 1;
+  background-color: #ffffff;
+}
+.signup-info {
+  margin-bottom: 40px;
+}
+.uni-input-ab {
+  position: relative;
+  padding: 4px 4px;
+  background-color: #ffffff;
+  width: 340px;
+  /* #ifndef APP-PLUS */
+  margin: 8px auto;
+  /* #endif */
+  border-radius: 5px;
+}
+/* #ifndef APP-PLUS */
+.uni-input-ab > input {
+  position: absolute;
+  left: 40px;
+  top: 6px;
+}
+/* #endif */
+
+.input-error {
+  position: absolute;
+  top: 6px;
+  right: 20px;
+  text-align: right;
+  color: #ff0000;
+}
+
+.uni-icon {
+  font-family: uniicons;
+  font-size: 24px;
+  font-weight: normal;
+  font-style: normal;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  color: #eeeeee;
+  margin-right: 16rpx;
+  margin-top: 30rpx;
+}
+.after {
+  margin-right: 4px;
+  padding: 3px 0;
+}
+
+.regist-btn {
+  align-items: center;
+}
+.uni-btn {
+  width: 406rpx;
+  border-radius: 0;
+}
+/* #ifdef APP-PLUS-NVUE */
+.default{
+  color:#016EE0;
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #016EE0;
+}
+.primary{
+  background-color: #016EE0;
+}
+/* #endif */
+</style>

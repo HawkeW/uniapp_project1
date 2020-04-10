@@ -1,0 +1,12 @@
+
+.radio-btn{
+  margin-bottom: 1px;
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
+}
+.radio-name{
+  /* flex: 1; */
+  margin-left: 26rpx;
+  text-align: left;
+}
+

@@ -1,0 +1,65 @@
+@font-face {
+  font-family: uniicons;
+  font-weight: normal;
+  font-style: normal;
+  src: url('~@/static/uni.ttf') format('truetype');
+}
+
+/*通用 */
+view {
+  font-size: 28rpx;
+  line-height: 1.8;
+}
+radio{
+  transform:scale(0.9);
+}
+label{
+  font-size: 34rpx;
+  line-height: 1.8;
+  padding: 0;
+  margin: 0;
+}
+navigator{
+  background-color: #ffffff;
+}
+progress,
+checkbox-group {
+  width: 100%;
+}
+
+form {
+  width: 100%;
+}
+
+button {
+  width: 406rpx;
+  height: 92rpx;
+  border-radius: unset;
+}
+
+button:after {
+  border-radius: unset;
+}
+button[type="primary"] {
+  color: #ffffff;
+  border-radius: none;
+  background-color: #016EE0;
+  border: 1px solid #016EE0;
+}
+button[type="default"] {
+  color: #016EE0;
+  border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background-color: #FFFFFF;
+  border: 1px solid #016EE0;
+}
+button[plain="true"] {
+  color: #007aff;
+  border: 1px solid #007aff;
+}
+button[plain="true"] ::after{
+  color: #016EE0;
+  border: 1px solid #016EE0;
+}
