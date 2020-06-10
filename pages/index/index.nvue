@@ -90,17 +90,22 @@ export default {
   onPullDownRefresh() {
     try{
     	const user = uni.getStorageSync('user');
-    	if(user){
+    	if(user.userId){
     		this.login(user);
     	}
     } 
     catch(e){
     	uni.navigateTo({url:'../login/login'})
     }
-    setTimeout(()=> {
-      uni.stopPullDownRefresh();
+		
+		if(this.user.userId){
 			this.requestStatus(this.user.userId);
-    }, 500);
+		}else{
+			uni.navigateTo({url:'../login/login'})
+		}
+		setTimeout(()=> {
+			uni.stopPullDownRefresh();
+		}, 500);
   }
 };
 </script>
