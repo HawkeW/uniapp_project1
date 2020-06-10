@@ -88,19 +88,19 @@ export default {
     uni.startPullDownRefresh();
   },
   onPullDownRefresh() {
-    uni.getStorage({
-      key: 'user',
-      success: (res) => {
-        if (res.data.userId) {
-          this.requestStatus(res.data.userId); 
-        }else{
-          this.failedLogin();
-        }
-      }
-    });
-    setTimeout(function() {
+    try{
+    	const user = uni.getStorageSync('user');
+    	if(user){
+    		this.login(user);
+    	}
+    } 
+    catch(e){
+    	uni.navigateTo({url:'../login/login'})
+    }
+    setTimeout(()=> {
       uni.stopPullDownRefresh();
-    }, 1000);
+			this.requestStatus(this.user.userId);
+    }, 500);
   }
 };
 </script>

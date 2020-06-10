@@ -93,7 +93,7 @@
               } else if(res.data.status='400'){
                 uni.showToast({
                   icon: 'none',
-                  title: "登录异常"
+                  title: res.data.infoText
                 });
               }
               else {

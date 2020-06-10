@@ -9,7 +9,7 @@ const store = new Vuex.Store({
     user: {
       userId: null,
       groupId: null,
-      groupName:'1',
+      groupName:null,
       status: null,
       userName: null,
     },
@@ -20,11 +20,7 @@ const store = new Vuex.Store({
     login(state, user) {
       state.user = user;
       state.hasLogin = true;
-      uni.setStorage({
-        key: 'user',
-        data: user
-      })
-      
+			uni.setStorageSync( 'user',user)
     },
     logout(state) {
       uni.clearStorage();
@@ -32,17 +28,11 @@ const store = new Vuex.Store({
     },
     setWeek(state, week) {
       state.week = week;
-      uni.setStorage({
-        key: 'week',
-        data: week
-      })
+      uni.setStorageSync('week', week)
     },
     updateUser(state, user) {
       state.user = user;
-      uni.setStorage({
-        key: 'user',
-        data: user
-      })
+			uni.setStorageSync( 'user',user)
     },
   }
 })
