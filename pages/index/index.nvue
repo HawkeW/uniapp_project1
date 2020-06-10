@@ -26,6 +26,8 @@
 import { getWeeklyStatus } from '../../common/api';
 import { mapState, mapMutations } from 'vuex';
 import weeklyStatus from '../../components/weeklyStatus';
+
+
 export default {
   computed:{
     ...mapState(['user', 'week'])

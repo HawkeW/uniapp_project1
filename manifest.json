@@ -74,5 +74,11 @@
     },
     "mp-toutiao" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "router" : {
+            "base" : "/uniapp_project1/"
+        },
+        "title" : "午安考勤"
     }
 }
